@@ -1,0 +1,19 @@
+use("game");
+
+db.battle.drop();
+
+db.battle.insertOne({
+    "active": true,
+    "pokemon_one": {
+        "id": "pokemon::001",
+        "hp": 100,
+        "pp": 10
+    },
+    "pokemon_two": {
+        "id": "pokemon::004",
+        "hp": 100,
+        "pp": 10
+    }
+});
+
+db.battle.find({});

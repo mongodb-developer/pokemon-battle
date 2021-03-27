@@ -1,0 +1,46 @@
+use("game");
+
+db.pokemon.drop();
+
+db.pokemon.insertMany([
+    {
+        "_id": "pokemon::001",
+        "name": "Bulbasaur",
+        "number": 1,
+        "hp": 100,
+        "pp": 10,
+        "moves": [
+            {
+                "name": "Tackle",
+                "damage": 25,
+                "pp": 2
+            },
+            {
+                "name": "Vine Whip",
+                "damage": 30,
+                "pp": 4
+            }
+        ]
+    },
+    {
+        "_id": "pokemon::004",
+        "name": "Charmander",
+        "number": 4,
+        "hp": 100,
+        "pp": 10,
+        "moves": [
+            {
+                "name": "Bite",
+                "damage": 25,
+                "pp": 2
+            },
+            {
+                "name": "Ember",
+                "damage": 30,
+                "pp": 4
+            }
+        ]
+    }
+]);
+
+db.pokemon.find({});
