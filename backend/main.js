@@ -1,11 +1,18 @@
-const { MongoClient } = require("mongodb");
+const { MongoClient, ObjectID } = require("mongodb");
 const Express = require("express");
 const Cors = require("cors");
 
 const app = Express();
 
 const http = require("http").Server(app);
-const io = require('socket.io')(http);
+const io = require('socket.io')(http, {
+    cors: {
+        origin: "*",
+        methods: ["GET", "POST"],
+        allowedHeaders: ["my-custom-header"],
+        credentials: true
+    }
+});
 
 app.use(Express.json());
 app.use(Express.urlencoded({ extended: true }));
@@ -19,6 +26,7 @@ const mongoClient = new MongoClient(
 );
 
 var collections = {};
+var changesBattles;
 
 app.get("/pokemon", async (request, response) => {
     try {
@@ -40,11 +48,14 @@ app.get("/battles", async (request, response) => {
 
 io.on("connection", (socket) => {
     console.log("A client has connected!");
+    changesBattles.on("change", (next) => {
+        io.to(socket.activeRoom).emit("refresh", next.fullDocument);
+    });
     socket.on("join", async (battleId) => {
         try {
-            let result = await collections.battles.findOne({ "_id": battleId });
+            let result = await collections.battles.findOne({ "_id": new ObjectID.createFromHexString(battleId) });
             if (!result) {
-                await collection.battles.insertOne({ "_id": battleId });
+                await collections.battles.insertOne({ });
             }
             socket.join(battleId);
             socket.emit("joined", battleId);
@@ -53,8 +64,18 @@ io.on("connection", (socket) => {
             console.error(ex);
         }
     });
-    socket.on("attack", (move) => {
-        console.log(socket.activeRoom);
+    socket.on("attack", async (pokemon, move) => {
+        await collections.battles.updateOne(
+            {
+                "_id": new ObjectID.createFromHexString(socket.activeRoom)
+            },
+            {
+                "$inc": {
+                    "pokemon_one.pp": -5,
+                    "pokemon_two.hp": -25
+                }
+            }
+        );
         io.to(socket.activeRoom).emit("attack", move);
     });
 });
@@ -64,6 +85,13 @@ http.listen(3000, async () => {
         await mongoClient.connect();
         collections.battles = mongoClient.db("game").collection("battle");
         collections.pokemon = mongoClient.db("game").collection("pokemon");
+        changesBattles = collections.battles.watch([
+            {
+                "$match": {
+                    "operationType": "update"
+                }
+            }
+        ], { fullDocument: "updateLookup" });
         console.log("Listening on *:3000...");
     } catch (ex) {
         console.error(ex);
