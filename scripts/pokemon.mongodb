@@ -6,25 +6,32 @@ db.pokemon.insertMany([
     {
         "_id": "pokemon::001",
         "name": "Bulbasaur",
+        "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png",
         "number": 1,
         "hp": 100,
         "pp": 10,
         "moves": [
             {
                 "name": "Tackle",
-                "damage": 25,
+                "damage": 20,
                 "pp": 2
             },
             {
                 "name": "Vine Whip",
                 "damage": 30,
                 "pp": 4
+            },
+            {
+                "name": "Rest",
+                "damage": 0,
+                "pp": -3
             }
         ]
     },
     {
         "_id": "pokemon::004",
         "name": "Charmander",
+        "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/4.png",
         "number": 4,
         "hp": 100,
         "pp": 10,
@@ -38,6 +45,161 @@ db.pokemon.insertMany([
                 "name": "Ember",
                 "damage": 30,
                 "pp": 4
+            },
+            {
+                "name": "Rest",
+                "damage": 0,
+                "pp": -3
+            }
+        ]
+    },
+    {
+        "_id": "pokemon::143",
+        "name": "Snorlax",
+        "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/143.png",
+        "number": 143,
+        "hp": 200,
+        "pp": 10,
+        "moves": [
+            {
+                "name": "Sleep",
+                "damage": 1,
+                "pp": 1
+            },
+            {
+                "name": "Rock Slide",
+                "damage": 40,
+                "pp": 15
+            },
+            {
+                "name": "Rest",
+                "damage": 0,
+                "pp": -4
+            }
+        ]
+    },
+    {
+        "_id": "pokemon::007",
+        "name": "Squirtle",
+        "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/7.png",
+        "number": 7,
+        "hp": 100,
+        "pp": 10,
+        "moves": [
+            {
+                "name": "Bubble Beam",
+                "damage": 25,
+                "pp": 3
+            },
+            {
+                "name": "Skull Bash",
+                "damage": 30,
+                "pp": 4
+            },
+            {
+                "name": "Rest",
+                "damage": 0,
+                "pp": -3
+            }
+        ]
+    },
+    {
+        "_id": "pokemon::025",
+        "name": "Pikachu",
+        "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png",
+        "number": 25,
+        "hp": 100,
+        "pp": 10,
+        "moves": [
+            {
+                "name": "Spark",
+                "damage": 15,
+                "pp": 3
+            },
+            {
+                "name": "Wild Charge",
+                "damage": 25,
+                "pp": 4
+            },
+            {
+                "name": "Rest",
+                "damage": 0,
+                "pp": -3
+            }
+        ]
+    },
+    {
+        "_id": "pokemon::052",
+        "name": "Meowth",
+        "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/52.png",
+        "number": 052,
+        "hp": 100,
+        "pp": 10,
+        "moves": [
+            {
+                "name": "Cut",
+                "damage": 10,
+                "pp": 2
+            },
+            {
+                "name": "Bite",
+                "damage": 20,
+                "pp": 4
+            },
+            {
+                "name": "Rest",
+                "damage": 0,
+                "pp": -3
+            }
+        ]
+    },
+    {
+        "_id": "pokemon::258",
+        "name": "Mudkip",
+        "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/258.png",
+        "number": 258,
+        "hp": 100,
+        "pp": 10,
+        "moves": [
+            {
+                "name": "Iron Tail",
+                "damage": 20,
+                "pp": 3
+            },
+            {
+                "name": "Waterfall",
+                "damage": 30,
+                "pp": 6
+            },
+            {
+                "name": "Rest",
+                "damage": 0,
+                "pp": -3
+            }
+        ]
+    },
+    {
+        "_id": "pokemon::133",
+        "name": "Eevee",
+        "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/133.png",
+        "number": 133,
+        "hp": 125,
+        "pp": 12,
+        "moves": [
+            {
+                "name": "Headbutt",
+                "damage": 30,
+                "pp": 3
+            },
+            {
+                "name": "Tail Whip",
+                "damage": 15,
+                "pp": 4
+            },
+            {
+                "name": "Rest",
+                "damage": 0,
+                "pp": -3
             }
         ]
     }

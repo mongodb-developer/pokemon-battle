@@ -19,7 +19,7 @@ app.use(Express.urlencoded({ extended: true }));
 app.use(Cors());
 
 const mongoClient = new MongoClient(
-    process.env["ATLAS_URI"], 
+    "mongodb+srv://mongodb:mongodb@cluster0.tdm0q.mongodb.net/myFirstDatabase?retryWrites=true&w=majority", 
     { 
         useUnifiedTopology: true 
     }
@@ -37,6 +37,7 @@ app.get("/pokemon", async (request, response) => {
     }
 });
 
+
 app.get("/battles", async (request, response) => {
     try {
         let result = await collections.battles.find({}).toArray();
@@ -46,38 +47,106 @@ app.get("/battles", async (request, response) => {
     }
 });
 
+
 io.on("connection", (socket) => {
     console.log("A client has connected!");
     changesBattles.on("change", (next) => {
         io.to(socket.activeRoom).emit("refresh", next.fullDocument);
     });
+
     socket.on("join", async (battleId) => {
         try {
-            let result = await collections.battles.findOne({ "_id": new ObjectID.createFromHexString(battleId) });
-            if (!result) {
-                await collections.battles.insertOne({ });
+            let result = await collections.battles.findOne({ "_id": battleId });
+            if(result){
+              socket.emit("refresh", result)
+            } else {
+              let newBattle = await collections.battles.insertOne({
+                "_id": battleId,
+                playerOne: {
+                  pokemon: {}
+                },
+                playerTwo: {
+                  pokemon: {}
+                }
+              });
+              socket.emit("refresh", newBattle.ops[0]);
             }
+            
             socket.join(battleId);
-            socket.emit("joined", battleId);
             socket.activeRoom = battleId;
+
         } catch (ex) {
             console.error(ex);
         }
     });
-    socket.on("attack", async (pokemon, move) => {
-        await collections.battles.updateOne(
+
+    socket.on("select", async (player, pokemon) => {
+      try {
+        if(player === 1){
+          await collections.battles.updateOne(
             {
-                "_id": new ObjectID.createFromHexString(socket.activeRoom)
+                "_id": socket.activeRoom
             },
             {
-                "$inc": {
-                    "pokemon_one.pp": -5,
-                    "pokemon_two.hp": -25
+            $set : {
+                playerOne : {
+                  pokemon : pokemon
                 }
+              }
             }
+          );
+        } else {
+          await collections.battles.updateOne(
+            {
+                "_id": socket.activeRoom
+            },
+            {
+            $set : {
+                playerTwo : {
+                  pokemon : pokemon
+                }
+              }
+            }
+          );
+        }
+        }
+        catch (e){
+          console.log(e);
+        }
+  });
+
+    socket.on("attack", async (player, move) => {
+      try{
+      if(player === 1){
+        await collections.battles.updateOne(
+          {
+              "_id": socket.activeRoom
+          },
+          {
+            "$inc": {
+                "playerOne.pokemon.pp": -move.pp,
+                "playerTwo.pokemon.hp": -move.damage
+            }
+          }
         );
-        io.to(socket.activeRoom).emit("attack", move);
+      } else {
+        await collections.battles.updateOne(
+          {
+              "_id": socket.activeRoom
+          },
+          {
+            "$inc": {
+                "playerTwo.pokemon.pp": -move.pp,
+                "playerOne.pokemon.hp": -move.damage
+            }
+          }
+        );
+      }
+    } catch (e) {
+      console.log(e);
+    }
     });
+    
 });
 
 http.listen(3000, async () => {
